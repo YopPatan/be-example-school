@@ -1,8 +1,10 @@
 package com.example.school.controller;
 
+import com.example.school.bean.PageResponse;
 import com.example.school.entity.CourseEntity;
 import com.example.school.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,12 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<CourseEntity>> getPageCourses(@RequestParam(defaultValue = "0") Integer page) {
+        PageResponse<CourseEntity> courseEntities = courseService.getPageCourses(page, 10);
+        return new ResponseEntity(courseEntities, HttpStatus.OK);
+    }
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<CourseEntity>> getAllCourses() {

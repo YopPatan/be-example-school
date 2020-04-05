@@ -1,8 +1,12 @@
 package com.example.school.service;
 
+import com.example.school.bean.PageResponse;
 import com.example.school.entity.CourseEntity;
 import com.example.school.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +20,16 @@ public class CourseService {
 
     public List<CourseEntity> getAllCourses() {
         List<CourseEntity> courseEntities = courseRepository.findAll();
+        return courseEntities;
+    }
+
+    public PageResponse<CourseEntity> getPageCourses(int page, int size) {
+        Pageable coursePageable = PageRequest.of(page, size);
+        Page<CourseEntity> courseEntitiesPage = courseRepository.findAll(coursePageable);
+        PageResponse<CourseEntity> courseEntities = new PageResponse<>();
+        courseEntities.setContent(courseEntitiesPage.getContent());
+        courseEntities.setNextPage((courseEntitiesPage.hasNext()) ? "?page=" + (page+1) : null);
+        courseEntities.setPrevPage((courseEntitiesPage.hasPrevious()) ? "?page=" + (page-1) : null);
         return courseEntities;
     }
 
