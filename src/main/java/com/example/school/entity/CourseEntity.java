@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,4 +17,12 @@ public class CourseEntity {
     private Integer id;
     private String name;
     private String code;
+
+    /*
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<StudentEntity> students = new ArrayList<>();
+     */
 }

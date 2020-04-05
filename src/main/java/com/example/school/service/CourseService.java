@@ -25,19 +25,7 @@ public class CourseService {
     }
 
     public Optional<CourseEntity> createCourse(CourseEntity courseEntity) {
-        Optional<CourseEntity> savedCourse;
-        if (courseEntity.getName().isEmpty()) {
-            savedCourse = Optional.empty();
-        } else if (courseEntity.getCode().isEmpty()) {
-            savedCourse = Optional.empty();
-        } else {
-            try {
-                savedCourse = Optional.of(courseRepository.save(courseEntity));
-            } catch (Exception ex) {
-                savedCourse = Optional.empty();
-            }
-        }
-        return savedCourse;
+        return this.saveCourse(Optional.of(courseEntity));
     }
 
     public Optional<CourseEntity> updateCourse(int id, CourseEntity courseEntity) {
@@ -50,14 +38,46 @@ public class CourseService {
             if (!courseEntity.getCode().isEmpty()) {
                 savedCourse.get().setCode(courseEntity.getCode());
             }
+            savedCourse = this.saveCourse(savedCourse);
 
-            try {
-                savedCourse = Optional.of(courseRepository.save(courseEntity));
-            } catch (Exception ex) {
-                savedCourse = Optional.empty();
-            }
         }
         return savedCourse;
+    }
+
+    public Optional<CourseEntity> deleteCourse(int id) {
+        Optional<CourseEntity> deleteCourse = courseRepository.findById(id);
+
+        if (deleteCourse.isPresent()) {
+            try {
+                courseRepository.delete(deleteCourse.get());
+            } catch (Exception ex) {
+                deleteCourse = Optional.empty();
+            }
+        }
+        return deleteCourse;
+    }
+
+    private Optional<CourseEntity> saveCourse(Optional<CourseEntity> courseEntity) {
+        if (!this.isValidCourse(courseEntity.get())) {
+            courseEntity = Optional.empty();
+        }
+        else {
+            try {
+                courseEntity = Optional.of(courseRepository.save(courseEntity.get()));
+            } catch (Exception ex) {
+                courseEntity = Optional.empty();
+            }
+        }
+        return courseEntity;
+    }
+
+    private boolean isValidCourse(CourseEntity courseEntity) {
+        if (courseEntity.getName().isEmpty() ||
+                courseEntity.getCode().isEmpty() ||
+                courseEntity.getCode().length() > 4) {
+            return false;
+        }
+        return true;
     }
 
 }

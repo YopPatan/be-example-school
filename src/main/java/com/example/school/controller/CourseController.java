@@ -55,4 +55,14 @@ public class CourseController {
         }
     }
 
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity deleteCourse(@PathVariable int id) {
+        Optional<CourseEntity> courseEntity = courseService.deleteCourse(id);
+        if (courseEntity.isPresent()) {
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
